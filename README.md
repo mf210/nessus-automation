@@ -25,7 +25,7 @@ Before using the script, ensure you have the following:
 ## Usage
 - Clone the repository to your local machine:
   ```bash
-  git clone https://github.com/your-username/nessus-automation-script.git
+  git clone https://github.com/mf210/nessus-automation.git
   cd nessus-automation-script
   ```
 - Create and configure your .env file with Nessus API keys.
