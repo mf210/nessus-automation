@@ -10,7 +10,7 @@ ACCESS_KEY = os.getenv("ACCESS_KEY")
 SECRET_KEY = os.getenv("SECRET_KEY")
 SCAN_NAME = "CISA Scan 1"
 
-# Function to get Nessus API token
+# get Nessus API token
 def get_nessus_token():
     url = f"{NESSUS_URL}/session"
     data = {"username": os.getenv("USERNAME"), "password": os.getenv("PASSWORD")}
@@ -19,7 +19,7 @@ def get_nessus_token():
     token = response.json()["token"]
     return token
 
-# Function to get scan ID by name
+# get scan ID by name
 def get_scan_id_by_name(token, scan_name):
     url = f"{NESSUS_URL}/scans"
     headers = {"X-Cookie": f"token={token}"}
@@ -32,7 +32,7 @@ def get_scan_id_by_name(token, scan_name):
     
     return None
 
-# Function to launch a scan by ID
+# launch a scan by ID
 def launch_scan_by_id(token, scan_id):
     url = f"{NESSUS_URL}/scans/{scan_id}/launch"
     headers = {"X-Cookie": f"token={token}"}
