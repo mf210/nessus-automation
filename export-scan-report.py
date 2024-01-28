@@ -1,4 +1,6 @@
 import os
+from time import sleep
+from http import HTTPStatus
 
 import requests
 
@@ -41,6 +43,14 @@ def export_scan_report(token, scan_id, format="nessus"):
     print(response.json())
     return response.json()
 
+# Check the file status of an exported scan
+def is_exported_file_ready(token, scan_id, file_id):
+    url = f"{NESSUS_URL}/scans/{scan_id}/export/{file_id}/status"
+    headers = {"X-Cookie": f"token={token}"}
+    response = requests.get(url, headers=headers, verify=False)
+    if response.status_code == HTTPStatus.OK and response.json()["status"] == "ready":
+        return True
+
 # Function to download the exported report
 def download_report(token, scan_id, file_id, file_name):
     url = f"{NESSUS_URL}/scans/{scan_id}/export/{file_id}/download"
@@ -66,6 +76,12 @@ def main():
 
             if "file" in export_result:
                 file_id = export_result["file"]
+                # check if the file is ready, if not wait
+                while True:
+                    if is_exported_file_ready(token, scan_id, file_id):
+                        break
+                    sleep(3)
+
                 print("file_id", file_id)
                 file_name = f"{SCAN_NAME}_report.nessus"
 
