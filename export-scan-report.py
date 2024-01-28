@@ -12,7 +12,7 @@ ACCESS_KEY = os.getenv("ACCESS_KEY")
 SECRET_KEY = os.getenv("SECRET_KEY")
 SCAN_NAME = "CISA Scan 1"
 
-# Function to get Nessus API token
+# get Nessus API token
 def get_nessus_token():
     url = f"{NESSUS_URL}/session"
     data = {"username": os.getenv("USERNAME"), "password": os.getenv("PASSWORD")}
@@ -21,7 +21,7 @@ def get_nessus_token():
     token = response.json()["token"]
     return token
 
-# Function to get scan ID by name
+# get scan ID by name
 def get_scan_id_by_name(token, scan_name):
     url = f"{NESSUS_URL}/scans"
     headers = {"X-Cookie": f"token={token}"}
@@ -34,7 +34,7 @@ def get_scan_id_by_name(token, scan_name):
 
     return None
 
-# Function to export scan report
+# export scan report
 def export_scan_report(token, scan_id, format="nessus"):
     url = f"{NESSUS_URL}/scans/{scan_id}/export"
     headers = {"X-Cookie": f"token={token}"}
@@ -51,7 +51,7 @@ def is_exported_file_ready(token, scan_id, file_id):
     if response.status_code == HTTPStatus.OK and response.json()["status"] == "ready":
         return True
 
-# Function to download the exported report
+# download the exported report
 def download_report(token, scan_id, file_id, file_name):
     url = f"{NESSUS_URL}/scans/{scan_id}/export/{file_id}/download"
     headers = {"X-Cookie": f"token={token}"}
