@@ -38,7 +38,7 @@ def get_scan_id_by_name(token, scan_name):
 def export_scan_report(token, scan_id, format="nessus"):
     url = f"{NESSUS_URL}/scans/{scan_id}/export?limit=2500"
     headers = {"X-Cookie": f"token={token}"}
-    data = {"format": format, "template_id": 257}
+    data = {"format": format, "template_id": 286}
     response = requests.post(url, headers=headers, json=data, verify=False)
     print(response.json())
     return response.json()
