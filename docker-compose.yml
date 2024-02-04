@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  nessus-client:
+    build: .
+    container_name: nessus-client
+    environment:
+      - NESSUS_URL=${NESSUS_URL}
+      - ACCESS_KEY=${ACCESS_KEY}
+      - SECRET_KEY=${SECRET_KEY}
+      - SCAN_NAME=${SCAN_NAME}
+    command: ["pipenv", "run", "python", "export-scan-report.py"]
