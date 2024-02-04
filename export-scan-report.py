@@ -7,10 +7,10 @@ import requests
 
 
 # Nessus API configuration
-NESSUS_URL = "https://127.0.0.1:8834"
+NESSUS_URL = os.getenv("NESSUS_URL")
 ACCESS_KEY = os.getenv("ACCESS_KEY")
 SECRET_KEY = os.getenv("SECRET_KEY")
-SCAN_NAME = "CISA Scan 1"
+SCAN_NAME = os.getenv("SCAN_NAME")
 
 # get Nessus API token
 def get_nessus_token():
@@ -36,9 +36,9 @@ def get_scan_id_by_name(token, scan_name):
 
 # export scan report
 def export_scan_report(token, scan_id, format="nessus"):
-    url = f"{NESSUS_URL}/scans/{scan_id}/export"
+    url = f"{NESSUS_URL}/scans/{scan_id}/export?limit=2500"
     headers = {"X-Cookie": f"token={token}"}
-    data = {"format": format, "template_id": True}
+    data = {"format": format, "template_id": 257}
     response = requests.post(url, headers=headers, json=data, verify=False)
     print(response.json())
     return response.json()
@@ -48,6 +48,7 @@ def is_exported_file_ready(token, scan_id, file_id):
     url = f"{NESSUS_URL}/scans/{scan_id}/export/{file_id}/status"
     headers = {"X-Cookie": f"token={token}"}
     response = requests.get(url, headers=headers, verify=False)
+    print(response.json())
     if response.status_code == HTTPStatus.OK and response.json()["status"] == "ready":
         return True
 
@@ -72,7 +73,7 @@ def main():
 
         if scan_id:
             # Export scan report in PDF format
-            export_result = export_scan_report(token, scan_id, format="nessus")
+            export_result = export_scan_report(token, scan_id, format="html")
 
             if "file" in export_result:
                 file_id = export_result["file"]
@@ -83,7 +84,7 @@ def main():
                     sleep(3)
 
                 print("file_id", file_id)
-                file_name = f"{SCAN_NAME}_report.nessus"
+                file_name = f"{SCAN_NAME}_report.html"
 
                 # Download the exported report
                 download_report(token, scan_id, file_id, file_name)
