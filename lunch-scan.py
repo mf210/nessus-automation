@@ -1,5 +1,5 @@
 import os
-
+import sys
 import requests
 
 
@@ -8,12 +8,12 @@ import requests
 NESSUS_URL = "https://127.0.0.1:8834"
 ACCESS_KEY = os.getenv("ACCESS_KEY")
 SECRET_KEY = os.getenv("SECRET_KEY")
-SCAN_NAME = "CISA Scan 1"
+SCAN_NAME = "test"
 
 # get Nessus API token
 def get_nessus_token():
     url = f"{NESSUS_URL}/session"
-    data = {"username": os.getenv("USERNAME"), "password": os.getenv("PASSWORD")}
+    data = {"username": "xxxxx", "password": "xxxxxxxx"}
     response = requests.post(url, json=data, verify=False)
     # print(response.json())
     token = response.json()["token"]
@@ -37,7 +37,13 @@ def launch_scan_by_id(token, scan_id):
     url = f"{NESSUS_URL}/scans/{scan_id}/launch"
     headers = {"X-Cookie": f"token={token}"}
     response = requests.post(url, headers=headers, verify=False)
-    return response.json()
+    if response.status_code == 200:
+
+        print("Lunch scan by id: status code",response.status_code)
+        return response.json()
+    else:
+        print(f"Error: Scan lunch failed!, {response.json()}")
+        sys.exit(1)
 
 # Main script
 def main():

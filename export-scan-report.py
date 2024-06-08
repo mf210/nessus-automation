@@ -10,12 +10,14 @@ import requests
 NESSUS_URL = os.getenv("NESSUS_URL")
 ACCESS_KEY = os.getenv("ACCESS_KEY")
 SECRET_KEY = os.getenv("SECRET_KEY")
-SCAN_NAME = os.getenv("SCAN_NAME")
+NESSUS_USER = os.getenv("NESSUS_USERNAME")
+NESSUS_PASS = os.getenv("NESSUS_PASSWORD")
+SCAN_NAME = os.getenv("SCAN_NAME", "test")
 
 # get Nessus API token
 def get_nessus_token():
     url = f"{NESSUS_URL}/session"
-    data = {"username": os.getenv("USERNAME"), "password": os.getenv("PASSWORD")}
+    data = {"username": NESSUS_USER, "password": NESSUS_PASS}
     response = requests.post(url, json=data, verify=False)
     # print(response.json())
     token = response.json()["token"]
@@ -38,7 +40,7 @@ def get_scan_id_by_name(token, scan_name):
 def export_scan_report(token, scan_id, format="nessus"):
     url = f"{NESSUS_URL}/scans/{scan_id}/export?limit=2500"
     headers = {"X-Cookie": f"token={token}"}
-    data = {"format": format, "template_id": 286}
+    data = {"format": format, "template_id": 606}
     response = requests.post(url, headers=headers, json=data, verify=False)
     print(response.json())
     return response.json()
